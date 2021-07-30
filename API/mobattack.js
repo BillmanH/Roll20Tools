@@ -8,10 +8,13 @@ on("chat:message",function(msg){
              sendChat("API", "You must select at least one attacker")
          }
          else {
-             sendChat("API", String(selected.length) + " objects are attacking.")
+             sendChat("GM", String(selected.length) + "attacking:")
              for(i=0;i<selected.length;i++){
                  var tok = getObj("graphic",selected[i]._id);
-                 sendChat(tok.get("name"),"Attacks you!");
+                 var roll = randomInteger(20)
+                 var str = "Attacks: "
+                 str += String(roll)
+                 sendChat(tok.get("name"),str);
              }
          }
     }
