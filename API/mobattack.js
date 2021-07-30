@@ -1,6 +1,6 @@
 // !get-em
 on("chat:message",function(msg){
-    if(msg.type=="api" && msg.content.indexOf("!get-em")==0)
+    if(msg.type=="api" && msg.content.indexOf("!get-em")==0 && playerIsGM())
     {
          var agrs = msg.content.split(/\s+/);
          var selected = msg.selected;
@@ -8,7 +8,7 @@ on("chat:message",function(msg){
              sendChat("API", "You must select at least one attacker")
          }
          else {
-             sendChat("GM", String(selected.length) + "attacking:")
+             sendChat("GM", String(selected.length) + " attacking:")
              for(i=0;i<selected.length;i++){
                  var tok = getObj("graphic",selected[i]._id);
                  var roll = randomInteger(20)
