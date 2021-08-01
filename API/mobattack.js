@@ -4,6 +4,7 @@ on("chat:message",function(msg){
     {
          var args = msg.content.split(/\s+/);
          var attr = args[1]
+         var attribute = pick_attr(attr)
          var selected = msg.selected;
          if(selected==undefined){
              sendChat("API", "You must select at least one attacker")
@@ -11,16 +12,18 @@ on("chat:message",function(msg){
          else {
              sendChat("GM", String(selected.length) + " attacking:")
              for(i=0;i<selected.length;i++){
-                 mod = get_char_attr(tok, attr)
-                 var tok = getObj("graphic",selected[i]._id);
-                 var roll = randomInteger(20)
-                 var str = "Attacks: "
-                 str += String(roll)
-                 str += " + "
-                 str += " " + attr + " "
-                 str += String(mod)
-                 sendChat(tok.get("name"),str);
-                 // sendPing(tok.left,tok.top,tok._pageid)
+                var tok = getObj("graphic",selected[i]._id);
+                var roll = randomInteger(20)
+                var str = "Attacks: "
+                str += String(roll)
+                if (attribute != undefined){
+                    mod = get_char_attr(tok, attribute)
+                    str += " + "
+                    str += " " + attr + "(" + String(mod) +")"
+                    str += ": " + String(roll+mod)
+                }
+                sendChat(tok.get("name"),str);
+                // sendPing(tok.left,tok.top,tok._pageid)
              }
          }
     }
@@ -29,25 +32,25 @@ on("chat:message",function(msg){
  
  
  function get_char_attr(tok, attr){
-     sendChat("GM","get char");
-     char = getObj("character",tok.get('represents'))
-     sendChat("GM",String(tok.get('represents')));
-     // attribute = getAttrByName(char.id, 'strength')
-     return attribute
- }
+        char = getObj("character",tok.get('represents'))
+        mod = getAttrByName(char.id, attr)
+    return mod
+}
  
  
  function pick_attr(attr){
-     var attribure = "none"
-     switch(attr.toLowerCase()) {
-       case "dex":
-         attribure = "dexterity";
-         break;
-       case "str":
-         attribure = "strength";
-         break;
-       default:
-         attribure = attr + " does not exist"
-     }
-     return attribute
+    var attribute = undefined
+    if (attr != undefined){
+        switch(attr.toLowerCase()) {
+            case "dex":
+                attribute = "dexterity_mod";
+                break;
+            case "str":
+                attribute = "strength_mod";
+                break;
+            default:
+                sendChat("GM", attr + " does not exist")
+        }
+    }
+    return attribute
  }
